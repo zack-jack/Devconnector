@@ -5,6 +5,10 @@ const passport = require("passport");
 
 // Load Profile Validation
 const validateProfileInput = require("../../validation/profile");
+// Load Profile Experience Validation
+const validateExperienceInput = require("../../validation/experience");
+// Load Profile Education Validation
+const validateEducationInput = require("../../validation/education");
 
 // Load Profile Model
 const Profile = require("../../models/Profile");
@@ -160,6 +164,78 @@ router.post(
           new Profile(profileFields).save().then(profile => res.json(profile));
         });
       }
+    });
+  }
+);
+
+// @route   POST api/profile/experience
+// @desc    Add experience to profile
+// @access  Private
+router.post(
+  "/experience",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { errors, isValid } = validateExperienceInput(req.body);
+
+    // Check Profile Experience Validation
+    if (!isValid) {
+      // Return any Profile Experience errors with 400 status
+      return res.status(400).json(errors);
+    }
+
+    Profile.findOne({ user: req.user.id }).then(profile => {
+      const newExperience = {
+        title: req.body.title,
+        company: req.body.company,
+        location: req.body.location,
+        from: req.body.from,
+        to: req.body.to,
+        current: req.body.current,
+        description: req.body.description
+      };
+
+      // Add to experience array
+      // A push method would have put it at the end so used unshift method instead
+      // Unshift puts it in the beginning
+      profile.experience.unshift(newExperience);
+
+      profile.save().then(profile => res.json(profile));
+    });
+  }
+);
+
+// @route   POST api/profile/education
+// @desc    Add education to profile
+// @access  Private
+router.post(
+  "/education",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { errors, isValid } = validateEducationInput(req.body);
+
+    // Check Profile Education Validation
+    if (!isValid) {
+      // Return any Profile Education errors with 400 status
+      return res.status(400).json(errors);
+    }
+
+    Profile.findOne({ user: req.user.id }).then(profile => {
+      const newEducation = {
+        school: req.body.school,
+        degree: req.body.degree,
+        fieldofstudy: req.body.fieldofstudy,
+        from: req.body.from,
+        to: req.body.to,
+        current: req.body.current,
+        description: req.body.description
+      };
+
+      // Add to education array
+      // A push method would have put it at the end so used unshift method instead
+      // Unshift puts it in the beginning
+      profile.education.unshift(newEducation);
+
+      profile.save().then(profile => res.json(profile));
     });
   }
 );
