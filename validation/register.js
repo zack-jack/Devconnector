@@ -43,12 +43,12 @@ module.exports = function validateRegisterInput(data) {
 
   // Checks if password confirmation field is left empty
   if (Validator.isEmpty(data.password2)) {
-    errors.password2 = "Confirm password field is required.";
+    errors.password2 = "Confirm Password field is required";
   }
 
   // Checks if password matchs the password confirmation field
   if (!Validator.equals(data.password, data.password2)) {
-    errors.password2 = "Passwords must match.";
+    errors.password2 = "Passwords must match";
   }
 
   // When errors remains empty, isValid
