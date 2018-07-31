@@ -20,6 +20,7 @@ class Register extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
+  // if the user is already logged in, the register address redirects to dashboard
   componentDidMount() {
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
